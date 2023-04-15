@@ -1,0 +1,135 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+<style>
+.add_expense{
+      background-color: #d2d2d2;
+			padding: 16px;
+			border-radius: 16px;
+			box-shadow: 0 0 10px rgba(155, 221, 135, 0.2);
+			
+			width: 30%;
+      height: auto;
+      float: right;
+      
+			
+}
+
+.transactions{
+  width: 65%;
+
+}
+</style>
+<br>
+    <div class="add_expense">
+            <h3 align="center"> Add Expense</h3>
+            <ul class="list-group list-group-flush" id="notes">
+              {% for note in user.notes %}
+              <li class="list-group-item">
+                {{ note.data }}
+                <button type="button" class="close" >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+              {% endfor %}
+            </ul>
+            <form action="{{ url_for('views.add_expense') }}" method="POST">
+                        
+              <div class="form-group">
+                  <label for="">Date and Time</label> 
+                  <input class="form-control" type="datetime-local" name="date" id="date">
+              </div>
+
+              <div class="form-group"> <label for="">Expense name</label> 
+                  <input class="form-control" type="text" name="expensename" id="expensename">
+              </div>
+              <div class="form-group">
+                  <label for="">Expense Amount</label> 
+                    <input class="form-control"  type="number" min="0" name="amount" id="amount">
+              </div>
+              
+              <div class="form-group">
+                  <select class="form-control" name="paymode" id="paymode">
+                      <option  selected hidden>Payment Mode</option>
+                      <option name="cash" value="cash">Cash</option>
+                      <option name="debitcard" value="debitcard">Debit Card</option>
+                      <option name="creditcard" value="creditcard">Credit Card</option>
+                      <option name="epayment" value="epayment">UPI</option>
+                      <option name="epayment" value="epayment">Other</option>
+
+                  </select>
+              </div>
+
+                    
+
+              <div class="form-group">
+                  <select class="form-control" name="category" id="category">
+
+                      <option selected hidden>Expense Category</option>
+                      <option   name = "Food" value="Food">Food</option>
+                      <option name = "Entertainment" value="Entertainment">Entertainment</option>
+                      <option name = "Transportation" value="Transportation">Transportation</option>
+                      <option name ="Education" value="Education">Education</option>
+                      <option name = "Health" value="Health">Health</option>
+                      <option name = "Social Life" value="Social Life">Social Life</option>
+                      <option name = "Other" value="Other">Other</option>
+
+          
+                  </select>
+              </div>
+
+            
+              
+              <input class="btn btn-danger" type="submit" value="Add" id="add">
+
+          </form>
+</div>
+<br>
+<div style=" margin: 10px;" >
+ 
+  <span class="total-expenses" style="margin-left: 10px;">
+    Total Expense: <span>{{ totalExpense }}</span>
+  </span>
+</div>
+
+<br>
+
+  <div class="transactions">
+    <h3 align="center"> Transactions </h3>
+    <div class="container my-3">
+      {% if allExpense|length == 0 %}
+         
+      <div class="alert alert-dark" role="alert">
+          You have not added any transactions yet!
+        </div>
+          {% else %} 
+          <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">SNo</th>
+                  <th scope="col">Expense Name</th>
+                  <th scope="col">Expense Amount</th>
+                  <th scope="col">Expense Category</th>
+                  <th scope="col">Date and Time</th>
+                  <th scope="col">Delete Expense</th>
+                </tr>
+              </thead>
+              <tbody>
+        {% for expense in allExpense|reverse %}
+          <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td> {{expense.expensename}}</td>
+            <td>  &#8377 {{expense.amount}}</td>
+            <td>{{expense.category}}</td>
+            <td> {{expense.date}}</td>
+            <td>
+            <a href="/delete/{{expense.id}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Delete</button>
+            </td>
+          </tr>
+        
+        {% endfor %}
+        </tbody>
+      </table>
+        {% endif %}         
+</div>
+
+    {% endblock %}
